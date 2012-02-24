@@ -4,6 +4,7 @@ module Topsy
     format :json
     base_uri "http://otter.topsy.com"
     @@windows = {:all => 'a', :week => 'w', :day => 'd', :month => 'm', :hour => 'h', :realtime => 'realtime'}
+    cattr_accessor :api_key
     
     # Returns info about API rate limiting
     #
@@ -158,7 +159,9 @@ module Topsy
     # @param [String] url the url to look up
     # @return [Topsy::UrlInfo]
     def url_info(url)
-      response = handle_response(self.class.get("/urlinfo.json", :query => {:url => url}))
+      query = {:url => url}
+      query.merge!({:api_key => Topsy::Client.api_key}) if Topsy::Client.api_key
+      response = handle_response(self.class.get("/urlinfo.json", :query => query))
       Topsy::UrlInfo.new(response)
     end
 
