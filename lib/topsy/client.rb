@@ -160,7 +160,7 @@ module Topsy
     # @return [Topsy::UrlInfo]
     def url_info(url)
       query = {:url => url}
-      query.merge!({:api_key => Topsy::Client.api_key}) if Topsy::Client.api_key
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
       response = handle_response(self.class.get("/urlinfo.json", :query => query))
       Topsy::UrlInfo.new(response)
     end
