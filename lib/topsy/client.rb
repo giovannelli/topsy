@@ -18,7 +18,9 @@ module Topsy
     # @param [String] url URL string for the author.
     # @return [Topsy::Author]
     def author_info(url)
-      authorinfo = handle_response(self.class.get("/authorinfo.json", :query => {:url => url}))
+      query = {:url => url}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      authorinfo = handle_response(self.class.get("/authorinfo.json", :query => query))
       Topsy::Author.new(authorinfo)
     end
 
@@ -32,7 +34,9 @@ module Topsy
     # @return [Hashie::Mash]
     def experts(q, options={})
       options = set_window_or_default(options)
-      handle_response(self.class.get("/experts.json", :query => {:q => q}.merge(options)))
+      query = {:q => q}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      handle_response(self.class.get("/experts.json", :query => query.merge(options)))
     end
     
     # Returns list of URLs posted by an author
@@ -44,7 +48,9 @@ module Topsy
     # @option options [Integer] :perpage limit number of results per page. (default: 10, max: 50)
     # @return [Topsy::Page]
     def link_posts(url, options={})
-      linkposts = handle_response(self.class.get("/linkposts.json", :query => {:url => url}.merge(options)))
+      query = {:url => url}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      linkposts = handle_response(self.class.get("/linkposts.json", :query => query.merge(options)))
       Topsy::Page.new(linkposts,Topsy::Linkpost)
     end
     
@@ -55,7 +61,9 @@ module Topsy
     # @option options [String] :contains Query string to filter results
     # @return [Topsy::LinkpostCount]
     def link_post_count(url, options={})
-      count = handle_response(self.class.get("/linkpostcount.json", :query => {:url => url}.merge(options)))
+      query = {:url => url}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      count = handle_response(self.class.get("/linkpostcount.json", :query => query.merge(options)))
       Topsy::LinkpostCount.new(count)
     end
 
@@ -67,7 +75,9 @@ module Topsy
     # @option options [Integer] :perpage limit number of results per page. (default: 10, max: 50)
     # @return [Topsy::Page]
     def related(url, options={})
-      response = handle_response(self.class.get("/related.json", :query => {:url => url}.merge(options)))
+      query = {:url => url}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      response = handle_response(self.class.get("/related.json", :query => query.merge(options)))
       Topsy::Page.new(response,Topsy::LinkSearchResult)
     end
     
@@ -88,7 +98,9 @@ module Topsy
         q += " site:#{options.delete(:site)}" if options[:site]
       end
       options = set_window_or_default(options)
-      results = handle_response(self.class.get("/search.json", :query => {:q => q}.merge(options)))
+      query = {:q => q}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      results = handle_response(self.class.get("/search.json", :query => query.merge(options)))
       Topsy::Page.new(results,Topsy::LinkSearchResult)
     end
 
@@ -97,7 +109,9 @@ module Topsy
     # @param [String] q the search query string
     # @return [Topsy::SearchCounts]
     def search_count(q)
-      counts = handle_response(self.class.get("/searchcount.json", :query => {:q => q}))
+      query = {:q => q}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      counts = handle_response(self.class.get("/searchcount.json", :query => query))
       Topsy::SearchCounts.new(counts)
     end
     
@@ -110,6 +124,7 @@ module Topsy
     def stats(url, options={})
       query = {:url => url}
       query.merge!(options)
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
       response = handle_response(self.class.get("/stats.json", :query => query))
       Topsy::Stats.new(response)
     end
@@ -122,7 +137,9 @@ module Topsy
     # @option options [Integer] :perpage limit number of results per page. (default: 10, max: 50)
     # @return [Topsy::Page]
     def tags(url, options={})
-      response = handle_response(self.class.get("/tags.json", :query => {:url => url}.merge(options)))
+      query = {:url => url}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      response = handle_response(self.class.get("/tags.json", :query => query.merge(options)))
       Topsy::Page.new(response,Topsy::Tag)
     end
     
@@ -136,7 +153,9 @@ module Topsy
     # @option options [Integer] :perpage limit number of results per page. (default: 10, max: 50)
     # @return [Topsy::Page]
     def trackbacks(url, options={})
-      results = handle_response(self.class.get("/trackbacks.json", :query => {:url => url}.merge(options)))
+      query = {:url => url}
+      query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
+      results = handle_response(self.class.get("/trackbacks.json", :query => query.merge(options)))
       results.list.each do |trackback|
         trackback.date = Time.at(trackback.date)
       end
@@ -150,6 +169,7 @@ module Topsy
     # @option options [Integer] :perpage limit number of results per page. (default: 10, max: 50)
     # @return [Topsy::Page]
     def trending(options={})
+      options.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
       response = handle_response(self.class.get("/trending.json", :query => options))
       Topsy::Page.new(response,Topsy::Trend)
     end
