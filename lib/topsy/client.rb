@@ -12,7 +12,7 @@ module Topsy
     def credit
       query = {}
       query.merge!({:apikey => Topsy::Client.api_key}) if Topsy::Client.api_key
-      handle_response(self.class.get("/credit.json", query))
+      handle_response(self.class.get("/credit.json", :query => query))
     end
     
     # Returns Profile information for an author (a twitter profile indexed by Topsy). The response contains the name, description (biography) and the influence level of the author
